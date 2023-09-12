@@ -1,0 +1,25 @@
+[CarePoint EHR] Running on port 8084
+--- CarePoint EHR Manual QA Live Test ---
+Test 1 Healthcheck:
+ HTTP/1.1 200 OK
+{"status":"UP","service":"carepoint-clinic-ehr"}
+
+Test 2 Valid Appointment Booking:
+ HTTP/1.1 201 Created
+{"resourceType":"Appointment","id":"appt_b576a2385218","patientId":"pat_9981","practitionerId":"dr_smith","start":"2026-11-26T10:00:00Z","end":"2026-11-26T10:30:00Z","status":"booked","description":"Annual Cardiology Checkup"}
+
+Test 3 Double-Booking Conflict:
+ HTTP/1.1 409 Conflict
+{"error":"Scheduling conflict: Practitioner already has an active appointment at this time"}
+
+Test 4 RBAC Rejection for Receptionist:
+ HTTP/1.1 403 Forbidden
+{"error":"Forbidden: Role 'RECEPTIONIST' cannot view clinical diagnosis notes."}
+
+Test 5 Authorized Clinical Access by Doctor:
+ HTTP/1.1 200 OK
+{"patientId":"pat_9981","diagnoses":["Hypertension","Type 2 Diabetes"],"confidential":true}
+
+Test 6 HIPAA / Audit Trail Verification:
+ HTTP/1.1 200 OK
+[{"id":"04c16319-5e05-4d36-8ec0-ae72c65ff678","timestamp":"2026-11-25T13:06:22.525Z","userId":"staff_mary","userRole":"RECEPTIONIST","action":"WRITE","resourceType":"Appointment","resourceId":"appt_b576a2385218","patientId":"pat_9981"},{"id":"47144611-2830-4cfb-9748-8d538fdb08a0","timestamp":"2026-11-25T13:06:22.561Z","userId":"staff_mary","userRole":"RECEPTIONIST","action":"READ","resourceType":"EncounterNote_BLOCKED","resourceId":"note_secret","patientId":"pat_9981"},{"id":"f9e2de79-2cba-4c88-a91c-73d8c5ffba8e","timestamp":"2026-11-25T13:06:22.578Z","userId":"dr_smith","userRole":"DOCTOR","action":"READ","resourceType":"EncounterNote_SUCCESS","resourceId":"note_secret","patientId":"pat_9981"}]
