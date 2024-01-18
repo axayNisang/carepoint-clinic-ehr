@@ -1,0 +1,24 @@
+{
+  "name": "carepoint-clinic-ehr",
+  "version": "1.0.0",
+  "description": "FHIR-compliant healthcare clinic scheduling and electronic health records system with HIPAA audit logging and RBAC",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/jest": "^29.5.3",
+    "@types/node": "^20.4.5",
+    "@types/uuid": "^9.0.2",
+    "jest": "^29.6.2",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
+  }
+}
