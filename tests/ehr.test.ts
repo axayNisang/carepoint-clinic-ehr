@@ -57,4 +57,26 @@ describe('CarePoint EHR & Access Governance', () => {
     expect(AccessPolicyEngine.canAccessClinicalNotes('NURSE')).toBe(true);
     expect(AccessPolicyEngine.canAccessClinicalNotes('RECEPTIONIST')).toBe(false);
   });
+
+  test('allows consecutive back-to-back appointments where end equals next start', () => {
+    scheduler.schedule(receptionist, {
+      status: 'booked',
+      patientId: 'pat_1',
+      practitionerId: 'doc_1',
+      start: '2024-05-01T10:00:00Z',
+      end: '2024-05-01T10:30:00Z',
+      description: 'Morning Checkup'
+    });
+
+    // Exactly adjacent: 10:30 start should be ALLOWED
+    const adjacent = scheduler.schedule(receptionist, {
+      status: 'booked',
+      patientId: 'pat_2',
+      practitionerId: 'doc_1',
+      start: '2024-05-01T10:30:00Z',
+      end: '2024-05-01T11:00:00Z',
+      description: 'Follow-up'
+    });
+    expect(adjacent.id).toBeDefined();
+  });
 });
